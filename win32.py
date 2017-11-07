@@ -65,7 +65,7 @@ NULL_WSTR = LPCWSTR(0)
 # Structures
 class WNDCLASSEXW(Structure):
     _fields_ = (('cbSize', UINT), ('style', UINT), ('lpfnWndProc', WNDPROC), ('cbClsExtra', c_int),
-                ('cbWndExtra', c_int), ('hinstance', HINSTANCE), ('hIcon', HICON), ('hCursor', HCURSOR), 
+                ('cbWndExtra', c_int), ('hinstance', HINSTANCE), ('hIcon', HICON), ('hCursor', HCURSOR),
                 ('hbrBackground', HBRUSH), ('lpszMenuName', LPCWSTR), ('lpszClassName', LPCWSTR), ('hIconSm', HICON))
 
 # Functions
@@ -207,11 +207,11 @@ async def process_events(app):
     asyncio.get_event_loop().stop()
 
 class Win32Window(object):
-    
+
     def __init__(self, app):
 
         # Wrapper over the Windows window procedure. This allows the window object to be sent
-        # to the wndproc in a simple and safe way. 
+        # to the wndproc in a simple and safe way.
         # Also, I like to use the double underscore notation to define system specific fields
         # This way, when debugging they appear like this: '_Win32Window__wndproc'
         self.__wndproc = WNDPROC(lambda hwnd, msg, w, l: wndproc(self, hwnd, msg, w, l))
@@ -251,7 +251,7 @@ class Win32Window(object):
         asyncio.ensure_future(process_events(self.app))
 
     def __del__(self):
-        
+
         # If the application did not exit using the conventional way
         if self.__hwnd != None:
             DestroyWindow(self.__hwnd)
@@ -281,7 +281,7 @@ class WinSwapchain(object):
         """
             Create a surface for the window
         """
-        
+
         app = self.app()
         surface = vk.SurfaceKHR(0)
         surface_info = vk.Win32SurfaceCreateInfoKHR(
@@ -303,4 +303,4 @@ class WinSwapchain(object):
         self.images = None
         self.views = None
         self.create_surface()
-        
+

@@ -54,7 +54,7 @@ def perspective(fov, aspect, z_near, z_far):
 def translate(mat=None, vec=(0.0, 0.0, 0.0)):
     mat = mat or deepcopy(identity)
     result = deepcopy(mat)
-    
+
 
     rows = (
         vec_scalar_mult(mat[0], vec[0]),
@@ -76,18 +76,18 @@ def rotate(mat=None, angle=0, vec=(0.0, 0.0, 0.0)):
     axis = vec
     temp = vec_scalar_mult(axis, 1.0-c)
     rot = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
-    
+
     rot[0][0] = c + temp[0] * axis[0]
     rot[0][1] = 0 + temp[0] * axis[1] + s * axis[2]
     rot[0][2] = 0 + temp[0] * axis[2] - s * axis[1]
 
     rot[1][0] = 0 + temp[1] * axis[0] - s * axis[2];
-    rot[1][1] = c + temp[1] * axis[1] 
+    rot[1][1] = c + temp[1] * axis[1]
     rot[1][2] = 0 + temp[1] * axis[2] + s * axis[0]
 
     rot[2][0] = 0 + temp[2] * axis[0] + s * axis[1]
     rot[2][1] = 0 + temp[2] * axis[1] - s * axis[0]
-    rot[2][2] = c + temp[2] * axis[2] 
+    rot[2][2] = c + temp[2] * axis[2]
 
     rows = []
     for i in range(3):
@@ -102,9 +102,9 @@ def rotate(mat=None, angle=0, vec=(0.0, 0.0, 0.0)):
 
     result = (
         list(accumulate(rows[0], vec_add))[-1],
-        list(accumulate(rows[1], vec_add))[-1], 
+        list(accumulate(rows[1], vec_add))[-1],
         list(accumulate(rows[2], vec_add))[-1],
         [float(x) for x in mat[3]]
     )
 
-    return tupleize(result) 
+    return tupleize(result)

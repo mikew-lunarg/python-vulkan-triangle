@@ -243,17 +243,17 @@ def handle_event(window, event_ptr):
         motion_event = cast(event_ptr, POINTER(xcb_motion_notify_event_t)).contents
         app = window.app()
         x, y = float(motion_event.event_x), float(motion_event.event_y)
-        
+
         if mouse_buttons['left']:
-            app.rotation[0] += (mouse_pos[1] - y) * 0.80 
-            app.rotation[1] += (mouse_pos[0] - x) * 0.80 
+            app.rotation[0] += (mouse_pos[1] - y) * 0.80
+            app.rotation[1] += (mouse_pos[0] - x) * 0.80
 
         elif mouse_buttons['right']:
             app.zoom += (mouse_pos[1] - y) * 0.005
-            
+
         mouse_pos = (x, y)
         app.update_uniform_buffers()
-    
+
     elif evt in (XCB_BUTTON_PRESS, XCB_BUTTON_RELEASE):
         press_event = cast(event_ptr, POINTER(xcb_button_press_event_t)).contents
         pressed = evt == XCB_BUTTON_PRESS
@@ -294,9 +294,9 @@ async def process_events(window):
         await app.rendering_done.wait()
 
     asyncio.get_event_loop().stop()
-    
+
 class XlibWindow(object):
-    
+
     def __init__(self, app):
         self.app = weakref.ref(app)
 
@@ -322,7 +322,7 @@ class XlibWindow(object):
         window = xcb_generate_id(connection)
         value_mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK
         value_list = (c_uint*32)(_screen.black_pixel, events_masks)
-      
+
         xcb_create_window(
             connection, XCB_COPY_FROM_PARENT, window, _screen.root,
             0, 0, 1280, 720, 0, XCB_WINDOW_CLASS_INPUT_OUTPUT,
@@ -382,7 +382,7 @@ class XlibWindow(object):
         )
 
 class XlibSwapchain(object):
-    
+
     def create_surface(self):
         """
             Create a surface for the window
@@ -401,7 +401,7 @@ class XlibSwapchain(object):
             self.surface = surface
         else:
             raise RuntimeError("Failed to create surface")
-    
+
     def __init__(self, app):
         self.app = weakref.ref(app)
         self.surface = None

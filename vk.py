@@ -2276,7 +2276,7 @@ DedicatedAllocationMemoryAllocateInfoNV = define_structure('DedicatedAllocationM
 )
 
 
-# FUNCTIONS 
+# FUNCTIONS
 
 DeviceFunctions = (
     (b'vkDestroyDevice', None, Device, POINTER(AllocationCallbacks), ),
@@ -2473,7 +2473,7 @@ GetInstanceProcAddr = vk.vkGetInstanceProcAddr
 GetInstanceProcAddr.restype = fn_VoidFunction
 GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
 
-# EXTENSIONS 
+# EXTENSIONS
 
 #VK_KHR_surface
 KHR_SURFACE_SPEC_VERSION = 25
