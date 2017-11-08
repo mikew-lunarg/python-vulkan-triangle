@@ -1,1 +1,1 @@
-python triangle.py
+python create_instance.py
