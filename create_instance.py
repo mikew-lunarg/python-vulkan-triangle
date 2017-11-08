@@ -18,7 +18,7 @@ class Application(object):
         """
             Setup the vulkan instance
         """
-        print("create_instance 000")
+        print("create_instance")
         app_info = vk.ApplicationInfo(
             s_type=vk.STRUCTURE_TYPE_APPLICATION_INFO,
             next=None,
@@ -29,23 +29,20 @@ class Application(object):
             api_version=vk.API_VERSION_1_0
         )
 
-        layer_count = 0
-        _layer_names = None
-
         create_info = vk.InstanceCreateInfo(
             s_type=vk.STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
             next=None,
             flags=0,
             application_info=pointer(app_info),
-            enabled_layer_count=layer_count,
-            enabled_layer_names=_layer_names,
+            enabled_layer_count=0,
+            enabled_layer_names=None,
             enabled_extension_count=0,
             enabled_extension_names=None
         )
 
         instance = vk.Instance(0)
+        print("CreateInstance");
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
-        print("create_instance 900")
         if result == vk.SUCCESS:
             # For simplicity, all vulkan functions are saved in the application object
             functions = chain(vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr),
@@ -56,35 +53,33 @@ class Application(object):
             self.instance = instance
 
         else:
-            raise RuntimeError('Instance creation failed. Error code: {}'.format(result))
+            raise RuntimeError('CreateInstance failed. Error code: {}'.format(result))
 
-    def create_device(self):
+
+    def query_device(self):
+        print("query_device")
         self.gpu = None
 
         # Enumerate the physical devices
         gpu_count = c_uint(0)
         result = self.EnumeratePhysicalDevices(self.instance, byref(gpu_count), None )
         if result != vk.SUCCESS or gpu_count.value == 0:
-            raise RuntimeError('Could not fetch the physical devices or there are no devices available')
+            raise RuntimeError('EnumeratePhysicalDevices failed or zero.')
 
         buf = (vk.PhysicalDevice*gpu_count.value)()
         self.EnumeratePhysicalDevices(self.instance, byref(gpu_count), cast(buf, POINTER(vk.PhysicalDevice)))
 
-
         # For this example use the first available device
         self.gpu = vk.PhysicalDevice(buf[0])
 
-        # Find a graphic queue that supports graphic operation and presentation into
-        # the surface previously created
         queue_families_count = c_uint(0)
         self.GetPhysicalDeviceQueueFamilyProperties(
             self.gpu,
             byref(queue_families_count),
             None
         )
-
         if queue_families_count.value == 0:
-            raise RuntimeError('No queues families found for the default GPU')
+            raise RuntimeError('queue_families_count = 0.')
 
         queue_families = (vk.QueueFamilyProperties*queue_families_count.value)()
         self.GetPhysicalDeviceQueueFamilyProperties(
@@ -98,10 +93,8 @@ class Application(object):
         self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.gpu_mem))
 
 
-
-
-
     def __init__(self):
+        print("__init__")
         # Vulkan objets
         self.instance = None
         self.gpu = None
@@ -110,9 +103,10 @@ class Application(object):
 
         # Vulkan objets initialization
         self.create_instance()
-        self.create_device()
+        self.query_device()
 
     def __del__(self):
+        print("__del__")
         if self.instance is None:
             return
 
@@ -120,8 +114,8 @@ class Application(object):
         if dev is not None:
             self.DestroyDevice(dev, None)
 
+        print("DestroyInstance")
         self.DestroyInstance(self.instance, None)
-        print('Application freed!')
 
 
 def main():
