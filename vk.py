@@ -52,6 +52,7 @@ def load_functions(vk_object, functions_list, loader):
     return functions
 
 API_VERSION_1_0 = MAKE_VERSION(1,0,0)
+API_VERSION_1_1 = MAKE_VERSION(1,1,0)
 
 
 # BASETYPES

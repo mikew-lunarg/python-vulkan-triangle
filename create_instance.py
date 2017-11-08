@@ -236,10 +236,15 @@ class Application(object):
         """
             Setup the vulkan instance
         """
+        print("create_instance 000")
         app_info = vk.ApplicationInfo(
-            s_type=vk.STRUCTURE_TYPE_APPLICATION_INFO, next=None,
-            application_name=b'PythonText', application_version=0,
-            engine_name=b'test', engine_version=0, api_version=vk.API_VERSION_1_0
+            s_type=vk.STRUCTURE_TYPE_APPLICATION_INFO,
+            next=None,
+            application_name=b'PythonText',
+            application_version=0,
+            engine_name=b'test',
+            engine_version=0,
+            api_version=vk.API_VERSION_1_0
         )
 
         if system_name == 'Windows':
@@ -260,18 +265,19 @@ class Application(object):
         _extensions = cast((c_char_p*len(extensions))(*extensions), POINTER(c_char_p))
 
         create_info = vk.InstanceCreateInfo(
-            s_type=vk.STRUCTURE_TYPE_INSTANCE_CREATE_INFO, next=None, flags=0,
+            s_type=vk.STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+            next=None,
+            flags=0,
             application_info=pointer(app_info),
-
             enabled_layer_count=layer_count,
             enabled_layer_names=_layer_names,
-
             enabled_extension_count=len(extensions),
             enabled_extension_names=_extensions
         )
 
         instance = vk.Instance(0)
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
+        print("create_instance 900")
         if result == vk.SUCCESS:
             # For simplicity, all vulkan functions are saved in the application object
             functions = chain(vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr),
