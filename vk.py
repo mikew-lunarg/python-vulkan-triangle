@@ -1,9 +1,11 @@
-# -*- coding: utf-8 -*-
+# vk.py
+# mikew@lunarg.com
+# Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
+
 from ctypes import (c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, Union, POINTER)
 import platform
 
-
-# Sysem initialization
+# platform-specific library initialization
 system_name = platform.system()
 if system_name == 'Windows':
     from ctypes import WINFUNCTYPE, windll
@@ -14,7 +16,7 @@ elif system_name == 'Linux':
     FUNCTYPE = CFUNCTYPE
     vk = cdll.LoadLibrary('libvulkan.so.1')
 
-# Platform types
+# platform-specific types
 #HINSTANCE = c_void_p
 #HWND = c_void_p
 #xcb_connection_t = c_void_p

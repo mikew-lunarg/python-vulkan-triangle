@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # mikew@lunarg.com
-# Inspired (long long ago) from https://github.com/gabdube/python-vulkan-triangle
+# Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
 import vk
 from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
@@ -8,7 +8,7 @@ from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTE
 class Application(object):
 
     def create_instance(self):
-        print("create_instance")
+        print('create_instance')
         app_info = vk.ApplicationInfo(
             s_type = vk.STRUCTURE_TYPE_APPLICATION_INFO,
             next = None,
@@ -31,7 +31,7 @@ class Application(object):
         )
 
         instance = vk.Instance(0)
-        print("CreateInstance");
+        print('CreateInstance');
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
         if result != vk.SUCCESS:
             raise RuntimeError('CreateInstance failed. result {}'.format(result))
@@ -45,12 +45,11 @@ class Application(object):
 
 
     def enumerate_devices(self):
-        print("enumerate_devices")
+        print('enumerate_devices')
         dev_count = c_uint(0)
         result = self.EnumeratePhysicalDevices(self.instance, byref(dev_count), None)
         if result != vk.SUCCESS or dev_count.value == 0:
             raise RuntimeError('EnumeratePhysicalDevices failed. result {}'.format(result))
-
         dev_data = (vk.PhysicalDevice * dev_count.value)()
         self.EnumeratePhysicalDevices(self.instance, byref(dev_count), cast(dev_data, POINTER(vk.PhysicalDevice)))
 
@@ -71,33 +70,32 @@ class Application(object):
         print('\tname {}'.format(self.device_properties.device_name))
 
     def get_queue_families(self, physical_device):
-        print("get_queue_families")
+        print('get_queue_families')
         qf_count = c_uint(0)
         self.GetPhysicalDeviceQueueFamilyProperties(physical_device, byref(qf_count), None)
         if qf_count.value == 0:
             raise RuntimeError('GetPhysicalDeviceQueueFamilyProperties failed')
-
         qf_data = (vk.QueueFamilyProperties * qf_count.value)()
         self.GetPhysicalDeviceQueueFamilyProperties(physical_device, byref(qf_count),
             cast(qf_data, POINTER(vk.QueueFamilyProperties)))
 
     def get_memory_properties(self, physical_device):
-        print("get_memory_properties")
+        print('get_memory_properties')
         self.memory_properties = vk.PhysicalDeviceMemoryProperties()
         self.GetPhysicalDeviceMemoryProperties(physical_device, byref(self.memory_properties))
 
 
     def __init__(self):
-        print("__init__")
+        print('__init__')
         self.instance = None
         self.physical_device = None
         self.memory_properties = None
         self.device_properties = None
 
     def __del__(self):
-        print("__del__")
+        print('__del__')
         if self.instance is not None:
-            print("DestroyInstance")
+            print('DestroyInstance')
             self.DestroyInstance(self.instance, None)
             self.instance = None
 
@@ -108,6 +106,7 @@ def main():
     app.enumerate_devices()
     app.get_queue_families(app.physical_device)
     app.get_memory_properties(app.physical_device)
+    app.get_device_properties(app.physical_device)
 
 
 if __name__ == '__main__':
