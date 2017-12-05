@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 # mikew@lunarg.com
 # Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
