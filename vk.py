@@ -16,10 +16,6 @@ elif system_name == 'Linux':
     FUNCTYPE = CFUNCTYPE
     vk = cdll.LoadLibrary('libvulkan.so.1')
 
-# platform-specific types
-Display = c_void_p
-Window = c_uint
-
 def MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
 
@@ -45,44 +41,12 @@ API_VERSION_1_1 = MAKE_VERSION(1,1,0)
 
 # BASETYPES
 
-SampleMask = c_uint
-Bool32 = c_uint
 Flags = c_uint
-DeviceSize = c_uint64
 
 
 # HANDLES
 
 Instance = c_size_t
-PhysicalDevice = c_size_t
-Device = c_size_t
-Queue = c_size_t
-CommandBuffer = c_size_t
-DeviceMemory = c_uint64
-CommandPool = c_uint64
-Buffer = c_uint64
-BufferView = c_uint64
-Image = c_uint64
-ImageView = c_uint64
-ShaderModule = c_uint64
-Pipeline = c_uint64
-PipelineLayout = c_uint64
-Sampler = c_uint64
-DescriptorSet = c_uint64
-DescriptorSetLayout = c_uint64
-DescriptorPool = c_uint64
-Fence = c_uint64
-Semaphore = c_uint64
-Event = c_uint64
-QueryPool = c_uint64
-Framebuffer = c_uint64
-RenderPass = c_uint64
-PipelineCache = c_uint64
-DisplayKHR = c_uint64
-DisplayModeKHR = c_uint64
-SurfaceKHR = c_uint64
-SwapchainKHR = c_uint64
-DebugReportCallbackEXT = c_uint64
 
 
 # FLAGS
