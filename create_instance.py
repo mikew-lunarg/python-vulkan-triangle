@@ -38,59 +38,12 @@ class Application(object):
 
         for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
             setattr(self, name, function)
-        for name, function in vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr):
-            setattr(self, name, function)
 
         self.instance = instance
-
-
-    def enumerate_devices(self):
-        print('enumerate_devices')
-        dev_count = c_uint(0)
-        result = self.EnumeratePhysicalDevices(self.instance, byref(dev_count), None)
-        if result != vk.SUCCESS or dev_count.value == 0:
-            raise RuntimeError('EnumeratePhysicalDevices failed. result {}'.format(result))
-        dev_data = (vk.PhysicalDevice * dev_count.value)()
-        self.EnumeratePhysicalDevices(self.instance, byref(dev_count), cast(dev_data, POINTER(vk.PhysicalDevice)))
-
-        # just use the first available device
-        self.physical_device = vk.PhysicalDevice(dev_data[0])
-
-        print('dev_data {}'.format(dev_data))
-        print('dev_data[0] {}'.format(dev_data[0]))
-        print('dev_data[1] {}'.format(dev_data[1]))
-        print('self.physical_device {}'.format(self.physical_device))
-        self.get_device_properties(dev_data[0])
-        self.get_device_properties(dev_data[1])
-
-    def get_device_properties(self, physical_device):
-        print('get_device_properties {}'.format(physical_device))
-        self.device_properties = vk.PhysicalDeviceProperties()
-        self.GetPhysicalDeviceProperties(physical_device, byref(self.device_properties))
-        print('\tname {}'.format(self.device_properties.device_name))
-
-    def get_queue_families(self, physical_device):
-        print('get_queue_families')
-        qf_count = c_uint(0)
-        self.GetPhysicalDeviceQueueFamilyProperties(physical_device, byref(qf_count), None)
-        if qf_count.value == 0:
-            raise RuntimeError('GetPhysicalDeviceQueueFamilyProperties failed')
-        qf_data = (vk.QueueFamilyProperties * qf_count.value)()
-        self.GetPhysicalDeviceQueueFamilyProperties(physical_device, byref(qf_count),
-            cast(qf_data, POINTER(vk.QueueFamilyProperties)))
-
-    def get_memory_properties(self, physical_device):
-        print('get_memory_properties')
-        self.memory_properties = vk.PhysicalDeviceMemoryProperties()
-        self.GetPhysicalDeviceMemoryProperties(physical_device, byref(self.memory_properties))
-
 
     def __init__(self):
         print('__init__')
         self.instance = None
-        self.physical_device = None
-        self.memory_properties = None
-        self.device_properties = None
 
     def __del__(self):
         print('__del__')
@@ -103,11 +56,6 @@ class Application(object):
 def main():
     app = Application()
     app.create_instance()
-    app.enumerate_devices()
-    app.get_queue_families(app.physical_device)
-    app.get_memory_properties(app.physical_device)
-    app.get_device_properties(app.physical_device)
-
 
 if __name__ == '__main__':
     main()

@@ -2374,34 +2374,6 @@ QueueFunctions = (
     (b'vkQueuePresentKHR', Result, Queue, POINTER(PresentInfoKHR), ),
 )
 
-PhysicalDeviceFunctions = (
-    (b'vkGetPhysicalDeviceProperties', None, PhysicalDevice, POINTER(PhysicalDeviceProperties), ),
-    (b'vkGetPhysicalDeviceQueueFamilyProperties', None, PhysicalDevice, POINTER(c_uint), POINTER(QueueFamilyProperties), ),
-    (b'vkGetPhysicalDeviceMemoryProperties', None, PhysicalDevice, POINTER(PhysicalDeviceMemoryProperties), ),
-    (b'vkGetPhysicalDeviceFeatures', None, PhysicalDevice, POINTER(PhysicalDeviceFeatures), ),
-    (b'vkGetPhysicalDeviceFormatProperties', None, PhysicalDevice, Format, POINTER(FormatProperties), ),
-    (b'vkGetPhysicalDeviceImageFormatProperties', Result, PhysicalDevice, Format, ImageType, ImageTiling, ImageUsageFlags, ImageCreateFlags, POINTER(ImageFormatProperties), ),
-    (b'vkCreateDevice', Result, PhysicalDevice, POINTER(DeviceCreateInfo), POINTER(AllocationCallbacks), POINTER(Device), ),
-    (b'vkEnumerateDeviceLayerProperties', Result, PhysicalDevice, POINTER(c_uint), POINTER(LayerProperties), ),
-    (b'vkEnumerateDeviceExtensionProperties', Result, PhysicalDevice, c_char_p, POINTER(c_uint), POINTER(ExtensionProperties), ),
-    (b'vkGetPhysicalDeviceSparseImageFormatProperties', None, PhysicalDevice, Format, ImageType, SampleCountFlagBits, ImageUsageFlags, ImageTiling, POINTER(c_uint), POINTER(SparseImageFormatProperties), ),
-    #(b'vkGetPhysicalDeviceDisplayPropertiesKHR', Result, PhysicalDevice, POINTER(c_uint), POINTER(DisplayPropertiesKHR), ),
-    #(b'vkGetPhysicalDeviceDisplayPlanePropertiesKHR', Result, PhysicalDevice, POINTER(c_uint), POINTER(DisplayPlanePropertiesKHR), ),
-    #(b'vkGetDisplayPlaneSupportedDisplaysKHR', Result, PhysicalDevice, c_uint, POINTER(c_uint), POINTER(DisplayKHR), ),
-    #(b'vkGetDisplayModePropertiesKHR', Result, PhysicalDevice, DisplayKHR, POINTER(c_uint), POINTER(DisplayModePropertiesKHR), ),
-    #(b'vkCreateDisplayModeKHR', Result, PhysicalDevice, DisplayKHR, POINTER(DisplayModeCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(DisplayModeKHR), ),
-    #(b'vkGetDisplayPlaneCapabilitiesKHR', Result, PhysicalDevice, DisplayModeKHR, c_uint, POINTER(DisplayPlaneCapabilitiesKHR), ),
-    #(b'vkGetPhysicalDeviceMirPresentationSupportKHR', Bool32, PhysicalDevice, c_uint, MirConnection, ),
-    #(b'vkGetPhysicalDeviceSurfaceSupportKHR', Result, PhysicalDevice, c_uint, SurfaceKHR, POINTER(Bool32), ),
-    #(b'vkGetPhysicalDeviceSurfaceCapabilitiesKHR', Result, PhysicalDevice, SurfaceKHR, POINTER(SurfaceCapabilitiesKHR), ),
-    #(b'vkGetPhysicalDeviceSurfaceFormatsKHR', Result, PhysicalDevice, SurfaceKHR, POINTER(c_uint), POINTER(SurfaceFormatKHR), ),
-    #(b'vkGetPhysicalDeviceSurfacePresentModesKHR', Result, PhysicalDevice, SurfaceKHR, POINTER(c_uint), POINTER(PresentModeKHR), ),
-    #(b'vkGetPhysicalDeviceWaylandPresentationSupportKHR', Bool32, PhysicalDevice, c_uint, wl_display, ),
-    #(b'vkGetPhysicalDeviceWin32PresentationSupportKHR', Bool32, PhysicalDevice, c_uint, ),
-    #(b'vkGetPhysicalDeviceXlibPresentationSupportKHR', Bool32, PhysicalDevice, c_uint, Display, VisualID, ),
-    #(b'vkGetPhysicalDeviceXcbPresentationSupportKHR', Bool32, PhysicalDevice, c_uint, xcb_connection_t, xcb_visualid_t, ),
-)
-
 CommandBufferFunctions = (
     (b'vkBeginCommandBuffer', Result, CommandBuffer, POINTER(CommandBufferBeginInfo), ),
     (b'vkEndCommandBuffer', Result, CommandBuffer, ),
