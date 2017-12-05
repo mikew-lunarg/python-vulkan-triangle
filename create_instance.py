@@ -38,8 +38,8 @@ class Application(object):
 
         for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
             setattr(self, name, function)
-        #for name, function in vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr):
-            #setattr(self, name, function)
+        for name, function in vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr):
+            setattr(self, name, function)
 
         self.instance = instance
 
@@ -97,8 +97,8 @@ def main():
     app = Application()
     app.create_instance()
     app.enumerate_devices()
-    #app.get_queue_families()
-    #app.get_memory_properties()
+    app.get_queue_families()
+    app.get_memory_properties()
 
 
 if __name__ == '__main__':
