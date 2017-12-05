@@ -16,8 +16,11 @@ elif system_name == 'Linux':
     FUNCTYPE = CFUNCTYPE
     vk = cdll.LoadLibrary('libvulkan.so.1')
 
+
 def MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
+API_VERSION_1_0 = MAKE_VERSION(1,0,0)
+API_VERSION_1_1 = MAKE_VERSION(1,1,0)
 
 def define_structure(name, *args):
     return type(name, (Structure,), {'_fields_': args})
@@ -35,10 +38,6 @@ def load_functions(vk_object, functions_list, loader):
             print('Function {} could not be loaded. (__debug__ == True)'.format(py_name))
     return functions
 
-API_VERSION_1_0 = MAKE_VERSION(1,0,0)
-API_VERSION_1_1 = MAKE_VERSION(1,1,0)
-
-
 # HANDLES
 Instance = c_size_t
 
@@ -46,7 +45,6 @@ Instance = c_size_t
 InstanceCreateFlags = c_uint
 
 # ENUMS
-
 API_Constants = c_uint
 MAX_PHYSICAL_DEVICE_NAME_SIZE = 256
 UUID_SIZE = 16
@@ -62,18 +60,9 @@ ATTACHMENT_UNUSED = c_uint(~0)
 TRUE = 1
 FALSE = 0
 
-
 StructureType = c_uint
 STRUCTURE_TYPE_APPLICATION_INFO = 0
 STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
-
-
-STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO = 47
-STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO = 48
-
-SubpassContents = c_uint
-SUBPASS_CONTENTS_INLINE = 0
-SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS = 1
 
 Result = c_uint
 SUCCESS = 0
@@ -95,13 +84,10 @@ ERROR_TOO_MANY_OBJECTS = -10
 ERROR_FORMAT_NOT_SUPPORTED = -11
 ERROR_FRAGMENTED_POOL = -12
 
-
 # FUNC POINTERS
 fn_VoidFunction = FUNCTYPE( None, )
 
-
 # STRUCTURES
-
 ApplicationInfo = define_structure('ApplicationInfo',
     ('s_type', StructureType),
     ('next', c_void_p),
@@ -136,7 +122,6 @@ InstanceFunctions = (
 GetInstanceProcAddr = vk.vkGetInstanceProcAddr
 GetInstanceProcAddr.restype = fn_VoidFunction
 GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
-
 
 # Load the loader functions in the module namespace
 loc = locals()
