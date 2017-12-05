@@ -2,7 +2,7 @@
 # mikew@lunarg.com
 # Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
-from ctypes import (c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, Union, POINTER)
+from ctypes import (c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, POINTER)
 import platform
 
 # platform-specific library initialization
@@ -17,28 +17,14 @@ elif system_name == 'Linux':
     vk = cdll.LoadLibrary('libvulkan.so.1')
 
 # platform-specific types
-#HINSTANCE = c_void_p
-#HWND = c_void_p
-#xcb_connection_t = c_void_p
-#xcb_window_t = c_uint
-#xcb_visualid_t = c_uint
-#MirConnection = c_void_p
-#MirSurface = c_void_p
-#wl_display = c_void_p
-#wl_surface = c_void_p
 Display = c_void_p
 Window = c_uint
-#VisualID = c_uint
-#ANativeWindow = c_void_p
 
 def MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
 
 def define_structure(name, *args):
     return type(name, (Structure,), {'_fields_': args})
-
-def define_union(name, *args):
-    return type(name, (Union,), {'_fields_': args})
 
 def load_functions(vk_object, functions_list, loader):
     functions = []
@@ -848,52 +834,6 @@ SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR = 1<<6
 SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR = 1<<7
 SURFACE_TRANSFORM_INHERIT_BIT_KHR = 1<<8
 
-DebugReportFlagBitsEXT = c_uint
-DEBUG_REPORT_INFORMATION_BIT_EXT = 1<<0
-DEBUG_REPORT_WARNING_BIT_EXT = 1<<1
-DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT = 1<<2
-DEBUG_REPORT_ERROR_BIT_EXT = 1<<3
-DEBUG_REPORT_DEBUG_BIT_EXT = 1<<4
-
-DebugReportObjectTypeEXT = c_uint
-DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT = 0
-DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT = 1
-DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT = 2
-DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT = 3
-DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT = 4
-DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT = 5
-DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT = 6
-DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT = 7
-DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT = 8
-DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT = 9
-DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT = 10
-DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT = 11
-DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT = 12
-DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT = 13
-DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT = 14
-DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT = 15
-DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT = 16
-DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT = 17
-DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT = 18
-DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT = 19
-DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT = 20
-DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT = 21
-DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT = 22
-DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT = 23
-DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT = 24
-DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT = 25
-DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT = 26
-DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT = 27
-DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT = 28
-
-DebugReportErrorEXT = c_uint
-DEBUG_REPORT_ERROR_NONE_EXT = 0
-DEBUG_REPORT_ERROR_CALLBACK_REF_EXT = 1
-
-RasterizationOrderAMD = c_uint
-RASTERIZATION_ORDER_STRICT_AMD = 0
-RASTERIZATION_ORDER_RELAXED_AMD = 1
-
 
 # FUNC POINTERS
 
@@ -936,11 +876,6 @@ AllocationCallbacks = define_structure('AllocationCallbacks',
     ('internal_allocation', fn_InternalAllocationNotification),
     ('internal_free', fn_InternalFreeNotification),
 )
-
-
-
-
-
 
 # FUNCTIONS
 
