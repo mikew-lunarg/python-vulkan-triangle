@@ -85,21 +85,24 @@ class Application(object):
             cast(queue_families, POINTER(vk.QueueFamilyProperties))
         )
 
+    def get_memory_properties(self):
+        print("get_memory_properties")
         # Get the physical device memory properties.
-        self.gpu_mem = vk.PhysicalDeviceMemoryProperties()
-        self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.gpu_mem))
+        self.memory_properties = vk.PhysicalDeviceMemoryProperties()
+        self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.memory_properties))
 
 
     def __init__(self):
         print("__init__")
-        # Vulkan objets
+        # initialize members
         self.instance = None
         self.gpu = None
-        self.gpu_mem = None
+        self.memory_properties = None
 
         # Vulkan objets initialization
         self.create_instance()
         self.query_device()
+        self.get_memory_properties()
 
     def __del__(self):
         print("__del__")
