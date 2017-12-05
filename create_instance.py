@@ -53,8 +53,8 @@ class Application(object):
         self.instance = instance
 
 
-    def query_device(self):
-        print("query_device")
+    def enumerate_devices(self):
+        print("enumerate_devices")
         self.gpu = None
 
         # Enumerate the physical devices
@@ -98,7 +98,7 @@ class Application(object):
 
         # Vulkan objets initialization
         self.create_instance()
-        self.query_device()
+        self.enumerate_devices()
         self.get_queue_families()
         self.get_memory_properties()
 
