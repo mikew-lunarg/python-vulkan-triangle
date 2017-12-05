@@ -55,36 +55,36 @@ class Application(object):
         self.EnumeratePhysicalDevices(self.instance, byref(dev_count), cast(dev_data, POINTER(vk.PhysicalDevice)))
 
         # just use the first available device
-        self.gpu = vk.PhysicalDevice(dev_data[0])
+        self.physical_device = vk.PhysicalDevice(dev_data[0])
 
 # dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
     def get_device_properties(self):
         print("get_device_properties")
         self.device_properties = vk.PhysicalDeviceMemoryProperties()
-        self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.device_properties))
+        self.GetPhysicalDeviceMemoryProperties(self.physical_device, byref(self.device_properties))
 
 
     def get_queue_families(self):
         print("get_queue_families")
         qf_count = c_uint(0)
-        self.GetPhysicalDeviceQueueFamilyProperties(self.gpu, byref(qf_count), None)
+        self.GetPhysicalDeviceQueueFamilyProperties(self.physical_device, byref(qf_count), None)
         if qf_count.value == 0:
             raise RuntimeError('GetPhysicalDeviceQueueFamilyProperties failed')
 
         qf_data = (vk.QueueFamilyProperties * qf_count.value)()
-        self.GetPhysicalDeviceQueueFamilyProperties(self.gpu, byref(qf_count),
+        self.GetPhysicalDeviceQueueFamilyProperties(self.physical_device, byref(qf_count),
             cast(qf_data, POINTER(vk.QueueFamilyProperties)))
 
     def get_memory_properties(self):
         print("get_memory_properties")
         self.memory_properties = vk.PhysicalDeviceMemoryProperties()
-        self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.memory_properties))
+        self.GetPhysicalDeviceMemoryProperties(self.physical_device, byref(self.memory_properties))
 
 
     def __init__(self):
         print("__init__")
         self.instance = None
-        self.gpu = None
+        self.physical_device = None
         self.memory_properties = None
         self.device_properties = None
 
