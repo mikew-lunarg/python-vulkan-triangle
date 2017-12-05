@@ -6,11 +6,10 @@
 
     @author: Gabriel Dubé
 """
-import platform, vk, weakref
+import platform, vk, itertools
 from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
-from itertools import chain
 
-system_name = platform.system()
+#system_name = platform.system()
 
 class Application(object):
 
@@ -45,7 +44,7 @@ class Application(object):
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
         if result == vk.SUCCESS:
             # For simplicity, all vulkan functions are saved in the application object
-            functions = chain(vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr),
+            functions = itertools.chain(vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr),
                               vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr))
             for name, function in functions:
                 setattr(self, name, function)
