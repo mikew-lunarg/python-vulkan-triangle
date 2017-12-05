@@ -62,8 +62,6 @@ ATTACHMENT_UNUSED = c_uint(~0)
 TRUE = 1
 FALSE = 0
 
-InternalAllocationType = c_uint
-SystemAllocationScope = c_uint
 
 StructureType = c_uint
 STRUCTURE_TYPE_APPLICATION_INFO = 0
@@ -99,12 +97,6 @@ ERROR_FRAGMENTED_POOL = -12
 
 
 # FUNC POINTERS
-
-fn_InternalAllocationNotification = FUNCTYPE( None, c_void_p, c_size_t, InternalAllocationType, SystemAllocationScope, )
-fn_InternalFreeNotification = FUNCTYPE( None, c_void_p, c_size_t, InternalAllocationType, SystemAllocationScope, )
-fn_ReallocationFunction = FUNCTYPE( c_void_p, c_void_p, c_void_p, c_size_t, c_size_t, SystemAllocationScope, )
-fn_AllocationFunction = FUNCTYPE( c_void_p, c_void_p, c_size_t, c_size_t, SystemAllocationScope, )
-fn_FreeFunction = FUNCTYPE( None, c_void_p, c_void_p, )
 fn_VoidFunction = FUNCTYPE( None, )
 
 
@@ -131,23 +123,14 @@ InstanceCreateInfo = define_structure('InstanceCreateInfo',
     ('enabled_extension_names', POINTER(c_char_p)),
 )
 
-AllocationCallbacks = define_structure('AllocationCallbacks',
-    ('user_data', c_void_p),
-    ('allocation', fn_AllocationFunction),
-    ('reallocation', fn_ReallocationFunction),
-    ('free', fn_FreeFunction),
-    ('internal_allocation', fn_InternalAllocationNotification),
-    ('internal_free', fn_InternalFreeNotification),
-)
-
 # FUNCTIONS
 
 LoaderFunctions = (
-    (b'vkCreateInstance', Result, POINTER(InstanceCreateInfo), POINTER(AllocationCallbacks), POINTER(Instance), ),
+    (b'vkCreateInstance', Result, POINTER(InstanceCreateInfo), c_void_p, POINTER(Instance), ),
 )
 
 InstanceFunctions = (
-    (b'vkDestroyInstance', None, Instance, POINTER(AllocationCallbacks), ),
+    (b'vkDestroyInstance', None, Instance, c_void_p ),
 )
 
 GetInstanceProcAddr = vk.vkGetInstanceProcAddr
