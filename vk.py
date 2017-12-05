@@ -2462,7 +2462,7 @@ InstanceFunctions = (
     #(b'vkCreateMirSurfaceKHR', Result, Instance, POINTER(MirSurfaceCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(SurfaceKHR), ),
     #(b'vkDestroySurfaceKHR', None, Instance, SurfaceKHR, POINTER(AllocationCallbacks), ),
     #(b'vkCreateWaylandSurfaceKHR', Result, Instance, POINTER(WaylandSurfaceCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(SurfaceKHR), ),
-    (b'vkCreateWin32SurfaceKHR', Result, Instance, POINTER(Win32SurfaceCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(SurfaceKHR), ),
+    #(b'vkCreateWin32SurfaceKHR', Result, Instance, POINTER(Win32SurfaceCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(SurfaceKHR), ),
     #(b'vkCreateXlibSurfaceKHR', Result, Instance, POINTER(XlibSurfaceCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(SurfaceKHR), ),
     #(b'vkCreateXcbSurfaceKHR', Result, Instance, POINTER(XcbSurfaceCreateInfoKHR), POINTER(AllocationCallbacks), POINTER(SurfaceKHR), ),
     #(b'vkCreateDebugReportCallbackEXT', Result, Instance, POINTER(DebugReportCallbackCreateInfoEXT), POINTER(AllocationCallbacks), POINTER(DebugReportCallbackEXT), ),
