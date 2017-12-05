@@ -5,10 +5,8 @@
 import vk
 from ctypes import cast, c_char_p, c_uint, c_int, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
 
-class Application(object):
+def main():
 
-    def create_instance(self):
-        print('create_instance')
         app_info = vk.ApplicationInfo(
             s_type = vk.STRUCTURE_TYPE_APPLICATION_INFO,
             next = None,
@@ -37,25 +35,12 @@ class Application(object):
             raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
 
         for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
-            setattr(self, name, function)
+            print('setattr(self, name, function)')
 
-        self.instance = instance
-
-    def __init__(self):
-        print('__init__')
-        self.instance = None
-
-    def __del__(self):
-        print('__del__')
-        if self.instance is not None:
-            print('DestroyInstance')
-            self.DestroyInstance(self.instance, None)
-            self.instance = None
-
-
-def main():
-    app = Application()
-    app.create_instance()
+        print('CreateInstance result {}'.format(c_int(result)))
+        #print('DestroyInstance')
+        #DestroyInstance(instance, None)
+        instance = None
 
 if __name__ == '__main__':
     main()
