@@ -34,7 +34,7 @@ class Application(object):
         print("CreateInstance");
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
         if result != vk.SUCCESS:
-            raise RuntimeError('CreateInstance failed. Error code: {}'.format(result))
+            raise RuntimeError('CreateInstance failed. result {}'.format(result))
 
         for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
             setattr(self, name, function)
@@ -46,16 +46,16 @@ class Application(object):
 
     def enumerate_devices(self):
         print("enumerate_devices")
-        gpu_count = c_uint(0)
-        result = self.EnumeratePhysicalDevices(self.instance, byref(gpu_count), None )
-        if result != vk.SUCCESS or gpu_count.value == 0:
-            raise RuntimeError('EnumeratePhysicalDevices failed')
+        dev_count = c_uint(0)
+        result = self.EnumeratePhysicalDevices(self.instance, byref(dev_count), None)
+        if result != vk.SUCCESS or dev_count.value == 0:
+            raise RuntimeError('EnumeratePhysicalDevices failed. result {}'.format(result))
 
-        buf = (vk.PhysicalDevice*gpu_count.value)()
-        self.EnumeratePhysicalDevices(self.instance, byref(gpu_count), cast(buf, POINTER(vk.PhysicalDevice)))
+        dev_data = (vk.PhysicalDevice * dev_count.value)()
+        self.EnumeratePhysicalDevices(self.instance, byref(dev_count), cast(dev_data, POINTER(vk.PhysicalDevice)))
 
         # just use the first available device
-        self.gpu = vk.PhysicalDevice(buf[0])
+        self.gpu = vk.PhysicalDevice(dev_data[0])
 
 # dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
     def get_device_properties(self):
@@ -67,14 +67,13 @@ class Application(object):
     def get_queue_families(self):
         print("get_queue_families")
         qf_count = c_uint(0)
-        self.GetPhysicalDeviceQueueFamilyProperties( self.gpu, byref(qf_count), None)
+        self.GetPhysicalDeviceQueueFamilyProperties(self.gpu, byref(qf_count), None)
         if qf_count.value == 0:
             raise RuntimeError('GetPhysicalDeviceQueueFamilyProperties failed')
 
-        queue_families = (vk.QueueFamilyProperties * qf_count.value)()
-        self.GetPhysicalDeviceQueueFamilyProperties( self.gpu, byref(qf_count),
-            cast(queue_families, POINTER(vk.QueueFamilyProperties))
-        )
+        qf_data = (vk.QueueFamilyProperties * qf_count.value)()
+        self.GetPhysicalDeviceQueueFamilyProperties(self.gpu, byref(qf_count),
+            cast(qf_data, POINTER(vk.QueueFamilyProperties)))
 
     def get_memory_properties(self):
         print("get_memory_properties")
