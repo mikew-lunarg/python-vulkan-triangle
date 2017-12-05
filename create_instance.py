@@ -1,39 +1,33 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# mikew@lunarg.com
+# Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
-"""
-    This is (kind of) a port of https://github.com/SaschaWillems/Vulkan
-
-    @author: Gabriel Dubé
-"""
-import platform, vk
+import vk
 from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
-
-#system_name = platform.system()
 
 class Application(object):
 
     def create_instance(self):
         print("create_instance")
         app_info = vk.ApplicationInfo(
-            s_type=vk.STRUCTURE_TYPE_APPLICATION_INFO,
-            next=None,
-            application_name=b'PythonText',
-            application_version=0,
-            engine_name=b'test',
-            engine_version=0,
-            api_version=vk.API_VERSION_1_0
+            s_type = vk.STRUCTURE_TYPE_APPLICATION_INFO,
+            next = None,
+            application_name = b'PythonText',
+            application_version = 0,
+            engine_name = b'test',
+            engine_version = 0,
+            api_version = vk.API_VERSION_1_0
         )
 
         create_info = vk.InstanceCreateInfo(
-            s_type=vk.STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-            next=None,
-            flags=0,
-            application_info=pointer(app_info),
-            enabled_layer_count=0,
-            enabled_layer_names=None,
-            enabled_extension_count=0,
-            enabled_extension_names=None
+            s_type = vk.STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+            next = None,
+            flags = 0,
+            application_info = pointer(app_info),
+            enabled_layer_count = 0,
+            enabled_layer_names = None,
+            enabled_extension_count = 0,
+            enabled_extension_names = None
         )
 
         instance = vk.Instance(0)
