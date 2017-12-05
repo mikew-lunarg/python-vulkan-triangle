@@ -57,12 +57,18 @@ class Application(object):
         # just use the first available device
         self.physical_device = vk.PhysicalDevice(dev_data[0])
 
-# dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
-    def get_device_properties(self):
-        print("get_device_properties")
-        self.device_properties = vk.PhysicalDeviceMemoryProperties()
-        self.GetPhysicalDeviceMemoryProperties(self.physical_device, byref(self.device_properties))
+        print('dev_data {}'.format(dev_data))
+        print('dev_data[0] {}'.format(dev_data[0]))
+        print('dev_data[1] {}'.format(dev_data[1]))
+        print('self.physical_device {}'.format(self.physical_device))
+        self.get_device_properties(dev_data[0])
+        self.get_device_properties(dev_data[1])
 
+    def get_device_properties(self, physical_device):
+        print('get_device_properties {}'.format(physical_device))
+        self.device_properties = vk.PhysicalDeviceProperties()
+        self.GetPhysicalDeviceProperties(physical_device, byref(self.device_properties))
+        print('\tname {}'.format(self.device_properties.device_name))
 
     def get_queue_families(self, physical_device):
         print("get_queue_families")
