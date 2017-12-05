@@ -66,15 +66,13 @@ class Application(object):
 
     def get_queue_families(self):
         print("get_queue_families")
-        queue_families_count = c_uint(0)
-        self.GetPhysicalDeviceQueueFamilyProperties( self.gpu, byref(queue_families_count), None)
-        if queue_families_count.value == 0:
-            raise RuntimeError('queue_families_count = 0.')
+        qf_count = c_uint(0)
+        self.GetPhysicalDeviceQueueFamilyProperties( self.gpu, byref(qf_count), None)
+        if qf_count.value == 0:
+            raise RuntimeError('GetPhysicalDeviceQueueFamilyProperties failed')
 
-        queue_families = (vk.QueueFamilyProperties*queue_families_count.value)()
-        self.GetPhysicalDeviceQueueFamilyProperties(
-            self.gpu,
-            byref(queue_families_count),
+        queue_families = (vk.QueueFamilyProperties * qf_count.value)()
+        self.GetPhysicalDeviceQueueFamilyProperties( self.gpu, byref(qf_count),
             cast(queue_families, POINTER(vk.QueueFamilyProperties))
         )
 
