@@ -3,6 +3,7 @@
 # Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
 import vk
+
 from ctypes import cast, c_char_p, c_uint, c_int, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
 
 def main():
@@ -29,6 +30,10 @@ def main():
         )
 
         instance = vk.Instance(0)
+        f = vars(vk)
+        for name, fnptr in vk.load_functions(instance, vk.LoaderFunctions, vk.GetInstanceProcAddr):
+            f[name] = fnptr
+
         print('CreateInstance');
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
         if result != vk.SUCCESS:

@@ -87,9 +87,3 @@ GetInstanceProcAddr = vk.vkGetInstanceProcAddr
 GetInstanceProcAddr.restype = FUNCTYPE( None, )
 GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
 
-# Load the loader functions in the module namespace
-loc = vars()
-for name, fnptr in load_functions(Instance(0), LoaderFunctions, GetInstanceProcAddr):
-    loc[name] = fnptr
-del loc
-
