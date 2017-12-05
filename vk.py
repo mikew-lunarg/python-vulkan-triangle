@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from ctypes import (c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, Union, POINTER)
-from platform import system
+import platform
 
 
 # Sysem initialization
-system_name = system()
+system_name = platform.system()
 if system_name == 'Windows':
     from ctypes import WINFUNCTYPE, windll
     FUNCTYPE = WINFUNCTYPE
@@ -14,20 +14,20 @@ elif system_name == 'Linux':
     FUNCTYPE = CFUNCTYPE
     vk = cdll.LoadLibrary('libvulkan.so.1')
 
-# System types
-HINSTANCE = c_void_p
-HWND = c_void_p
-xcb_connection_t = c_void_p
-xcb_window_t = c_uint
-xcb_visualid_t = c_uint
-MirConnection = c_void_p
-MirSurface = c_void_p
-wl_display = c_void_p
-wl_surface = c_void_p
+# Platform types
+#HINSTANCE = c_void_p
+#HWND = c_void_p
+#xcb_connection_t = c_void_p
+#xcb_window_t = c_uint
+#xcb_visualid_t = c_uint
+#MirConnection = c_void_p
+#MirSurface = c_void_p
+#wl_display = c_void_p
+#wl_surface = c_void_p
 Display = c_void_p
 Window = c_uint
-VisualID = c_uint
-ANativeWindow = c_void_p
+#VisualID = c_uint
+#ANativeWindow = c_void_p
 
 def MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
@@ -163,12 +163,12 @@ SurfaceTransformFlagsKHR = c_uint
 SwapchainCreateFlagsKHR = c_uint
 DisplayModeCreateFlagsKHR = c_uint
 DisplaySurfaceCreateFlagsKHR = c_uint
-AndroidSurfaceCreateFlagsKHR = c_uint
-MirSurfaceCreateFlagsKHR = c_uint
-WaylandSurfaceCreateFlagsKHR = c_uint
-Win32SurfaceCreateFlagsKHR = c_uint
-XlibSurfaceCreateFlagsKHR = c_uint
-XcbSurfaceCreateFlagsKHR = c_uint
+#AndroidSurfaceCreateFlagsKHR = c_uint
+#MirSurfaceCreateFlagsKHR = c_uint
+#WaylandSurfaceCreateFlagsKHR = c_uint
+#Win32SurfaceCreateFlagsKHR = c_uint
+#XlibSurfaceCreateFlagsKHR = c_uint
+#XcbSurfaceCreateFlagsKHR = c_uint
 DebugReportFlagsEXT = c_uint
 
 # ENUMS
@@ -2134,52 +2134,52 @@ SurfaceCapabilitiesKHR = define_structure('SurfaceCapabilitiesKHR',
     ('supported_usage_flags', ImageUsageFlags),
 )
 
-AndroidSurfaceCreateInfoKHR = define_structure('AndroidSurfaceCreateInfoKHR',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', AndroidSurfaceCreateFlagsKHR),
-    ('window', ANativeWindow),
-)
+#AndroidSurfaceCreateInfoKHR = define_structure('AndroidSurfaceCreateInfoKHR',
+#    ('s_type', StructureType),
+#    ('next', c_void_p),
+#    ('flags', AndroidSurfaceCreateFlagsKHR),
+#    ('window', ANativeWindow),
+#)
 
-MirSurfaceCreateInfoKHR = define_structure('MirSurfaceCreateInfoKHR',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', MirSurfaceCreateFlagsKHR),
-    ('connection', MirConnection),
-    ('mir_surface', MirSurface),
-)
+#MirSurfaceCreateInfoKHR = define_structure('MirSurfaceCreateInfoKHR',
+#    ('s_type', StructureType),
+#    ('next', c_void_p),
+#    ('flags', MirSurfaceCreateFlagsKHR),
+#    ('connection', MirConnection),
+#    ('mir_surface', MirSurface),
+#)
 
-WaylandSurfaceCreateInfoKHR = define_structure('WaylandSurfaceCreateInfoKHR',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', WaylandSurfaceCreateFlagsKHR),
-    ('display', wl_display),
-    ('surface', wl_surface),
-)
+#WaylandSurfaceCreateInfoKHR = define_structure('WaylandSurfaceCreateInfoKHR',
+#    ('s_type', StructureType),
+#    ('next', c_void_p),
+#    ('flags', WaylandSurfaceCreateFlagsKHR),
+#    ('display', wl_display),
+#    ('surface', wl_surface),
+#)
 
-Win32SurfaceCreateInfoKHR = define_structure('Win32SurfaceCreateInfoKHR',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', Win32SurfaceCreateFlagsKHR),
-    ('hinstance', HINSTANCE),
-    ('hwnd', HWND),
-)
+#Win32SurfaceCreateInfoKHR = define_structure('Win32SurfaceCreateInfoKHR',
+#    ('s_type', StructureType),
+#    ('next', c_void_p),
+#    ('flags', Win32SurfaceCreateFlagsKHR),
+#    ('hinstance', HINSTANCE),
+#    ('hwnd', HWND),
+#)
 
-XlibSurfaceCreateInfoKHR = define_structure('XlibSurfaceCreateInfoKHR',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', XlibSurfaceCreateFlagsKHR),
-    ('dpy', Display),
-    ('window', Window),
-)
+#XlibSurfaceCreateInfoKHR = define_structure('XlibSurfaceCreateInfoKHR',
+#    ('s_type', StructureType),
+#    ('next', c_void_p),
+#    ('flags', XlibSurfaceCreateFlagsKHR),
+#    ('dpy', Display),
+#    ('window', Window),
+#)
 
-XcbSurfaceCreateInfoKHR = define_structure('XcbSurfaceCreateInfoKHR',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', XcbSurfaceCreateFlagsKHR),
-    ('connection', xcb_connection_t),
-    ('window', xcb_window_t),
-)
+#XcbSurfaceCreateInfoKHR = define_structure('XcbSurfaceCreateInfoKHR',
+#    ('s_type', StructureType),
+#    ('next', c_void_p),
+#    ('flags', XcbSurfaceCreateFlagsKHR),
+#    ('connection', xcb_connection_t),
+#    ('window', xcb_window_t),
+#)
 
 SurfaceFormatKHR = define_structure('SurfaceFormatKHR',
     ('format', Format),
@@ -2504,40 +2504,40 @@ KHR_DISPLAY_SWAPCHAIN_EXTENSION_NAME = "VK_KHR_display_swapchain"
 STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR = 1000003000
 ERROR_INCOMPATIBLE_DISPLAY_KHR = -1000003001
 
-#VK_KHR_xlib_surface
-KHR_XLIB_SURFACE_SPEC_VERSION = 6
-KHR_XLIB_SURFACE_EXTENSION_NAME = "VK_KHR_xlib_surface"
-STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR = 1000004000
+##VK_KHR_xlib_surface
+#KHR_XLIB_SURFACE_SPEC_VERSION = 6
+#KHR_XLIB_SURFACE_EXTENSION_NAME = "VK_KHR_xlib_surface"
+#STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR = 1000004000
 
-#VK_KHR_xcb_surface
-KHR_XCB_SURFACE_SPEC_VERSION = 6
-KHR_XCB_SURFACE_EXTENSION_NAME = "VK_KHR_xcb_surface"
-STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR = 1000005000
+##VK_KHR_xcb_surface
+#KHR_XCB_SURFACE_SPEC_VERSION = 6
+#KHR_XCB_SURFACE_EXTENSION_NAME = "VK_KHR_xcb_surface"
+#STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR = 1000005000
 
-#VK_KHR_wayland_surface
-KHR_WAYLAND_SURFACE_SPEC_VERSION = 5
-KHR_WAYLAND_SURFACE_EXTENSION_NAME = "VK_KHR_wayland_surface"
-STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR = 1000006000
+##VK_KHR_wayland_surface
+#KHR_WAYLAND_SURFACE_SPEC_VERSION = 5
+#KHR_WAYLAND_SURFACE_EXTENSION_NAME = "VK_KHR_wayland_surface"
+#STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR = 1000006000
 
-#VK_KHR_mir_surface
-KHR_MIR_SURFACE_SPEC_VERSION = 4
-KHR_MIR_SURFACE_EXTENSION_NAME = "VK_KHR_mir_surface"
-STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR = 1000007000
+##VK_KHR_mir_surface
+#KHR_MIR_SURFACE_SPEC_VERSION = 4
+#KHR_MIR_SURFACE_EXTENSION_NAME = "VK_KHR_mir_surface"
+#STRUCTURE_TYPE_MIR_SURFACE_CREATE_INFO_KHR = 1000007000
 
-#VK_KHR_android_surface
-KHR_ANDROID_SURFACE_SPEC_VERSION = 6
-KHR_ANDROID_SURFACE_EXTENSION_NAME = "VK_KHR_android_surface"
-STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR = 1000008000
+##VK_KHR_android_surface
+#KHR_ANDROID_SURFACE_SPEC_VERSION = 6
+#KHR_ANDROID_SURFACE_EXTENSION_NAME = "VK_KHR_android_surface"
+#STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR = 1000008000
 
-#VK_KHR_win32_surface
-KHR_WIN32_SURFACE_SPEC_VERSION = 5
-KHR_WIN32_SURFACE_EXTENSION_NAME = "VK_KHR_win32_surface"
-STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR = 1000009000
+##VK_KHR_win32_surface
+#KHR_WIN32_SURFACE_SPEC_VERSION = 5
+#KHR_WIN32_SURFACE_EXTENSION_NAME = "VK_KHR_win32_surface"
+#STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR = 1000009000
 
-#VK_ANDROID_native_buffer
-ANDROID_NATIVE_BUFFER_SPEC_VERSION = 4
-ANDROID_NATIVE_BUFFER_NUMBER = 11
-ANDROID_NATIVE_BUFFER_NAME = "VK_ANDROID_native_buffer"
+##VK_ANDROID_native_buffer
+#ANDROID_NATIVE_BUFFER_SPEC_VERSION = 4
+#ANDROID_NATIVE_BUFFER_NUMBER = 11
+#ANDROID_NATIVE_BUFFER_NAME = "VK_ANDROID_native_buffer"
 
 #VK_EXT_debug_report
 EXT_DEBUG_REPORT_SPEC_VERSION = 3
