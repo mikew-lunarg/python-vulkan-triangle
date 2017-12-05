@@ -14,9 +14,6 @@ from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTE
 class Application(object):
 
     def create_instance(self):
-        """
-            Setup the vulkan instance
-        """
         print("create_instance")
         app_info = vk.ApplicationInfo(
             s_type=vk.STRUCTURE_TYPE_APPLICATION_INFO,
@@ -91,16 +88,9 @@ class Application(object):
 
     def __init__(self):
         print("__init__")
-        # initialize members
         self.instance = None
         self.gpu = None
         self.memory_properties = None
-
-        # Vulkan objets initialization
-        self.create_instance()
-        self.enumerate_devices()
-        self.get_queue_families()
-        self.get_memory_properties()
 
     def __del__(self):
         print("__del__")
@@ -111,6 +101,11 @@ class Application(object):
 
 def main():
     app = Application()
+    app.create_instance()
+    app.enumerate_devices()
+    app.get_queue_families()
+    app.get_memory_properties()
+
 
 if __name__ == '__main__':
     main()
