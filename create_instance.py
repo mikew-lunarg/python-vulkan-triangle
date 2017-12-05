@@ -42,16 +42,15 @@ class Application(object):
         instance = vk.Instance(0)
         print("CreateInstance");
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
-        if result == vk.SUCCESS:
-            for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
-                setattr(self, name, function)
-            for name, function in vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr):
-                setattr(self, name, function)
-
-            self.instance = instance
-
-        else:
+        if result != vk.SUCCESS:
             raise RuntimeError('CreateInstance failed. Error code: {}'.format(result))
+
+        for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
+            setattr(self, name, function)
+        for name, function in vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr):
+            setattr(self, name, function)
+
+        self.instance = instance
 
 
     def query_device(self):
