@@ -1,6 +1,6 @@
 
 run:
-	./RUNME.sh
+	./create_instance.py
 
 clean clobber nuke:
 	-rm -rf __pycache__
