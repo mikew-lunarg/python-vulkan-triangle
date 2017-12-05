@@ -34,12 +34,13 @@ def main():
         if result != vk.SUCCESS:
             raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
 
-        for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
-            print('setattr(self, name, function)')
+        f = vars(vk)
+        for name, fnptr in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
+            f[name] = fnptr
 
         print('CreateInstance result {}'.format(c_int(result)))
-        #print('DestroyInstance')
-        #DestroyInstance(instance, None)
+        print('DestroyInstance')
+        vk.DestroyInstance(instance, None)
         instance = None
 
 if __name__ == '__main__':
