@@ -101,77 +101,7 @@ DebugReportCallbackEXT = c_uint64
 
 # FLAGS
 
-FramebufferCreateFlags = c_uint
-QueryPoolCreateFlags = c_uint
-RenderPassCreateFlags = c_uint
-SamplerCreateFlags = c_uint
-PipelineLayoutCreateFlags = c_uint
-PipelineCacheCreateFlags = c_uint
-PipelineDepthStencilStateCreateFlags = c_uint
-PipelineDynamicStateCreateFlags = c_uint
-PipelineColorBlendStateCreateFlags = c_uint
-PipelineMultisampleStateCreateFlags = c_uint
-PipelineRasterizationStateCreateFlags = c_uint
-PipelineViewportStateCreateFlags = c_uint
-PipelineTessellationStateCreateFlags = c_uint
-PipelineInputAssemblyStateCreateFlags = c_uint
-PipelineVertexInputStateCreateFlags = c_uint
-PipelineShaderStageCreateFlags = c_uint
-DescriptorSetLayoutCreateFlags = c_uint
-BufferViewCreateFlags = c_uint
 InstanceCreateFlags = c_uint
-DeviceCreateFlags = c_uint
-DeviceQueueCreateFlags = c_uint
-QueueFlags = c_uint
-MemoryPropertyFlags = c_uint
-MemoryHeapFlags = c_uint
-AccessFlags = c_uint
-BufferUsageFlags = c_uint
-BufferCreateFlags = c_uint
-ShaderStageFlags = c_uint
-ImageUsageFlags = c_uint
-ImageCreateFlags = c_uint
-ImageViewCreateFlags = c_uint
-PipelineCreateFlags = c_uint
-ColorComponentFlags = c_uint
-FenceCreateFlags = c_uint
-SemaphoreCreateFlags = c_uint
-FormatFeatureFlags = c_uint
-QueryControlFlags = c_uint
-QueryResultFlags = c_uint
-ShaderModuleCreateFlags = c_uint
-EventCreateFlags = c_uint
-CommandPoolCreateFlags = c_uint
-CommandPoolResetFlags = c_uint
-CommandBufferResetFlags = c_uint
-CommandBufferUsageFlags = c_uint
-QueryPipelineStatisticFlags = c_uint
-MemoryMapFlags = c_uint
-ImageAspectFlags = c_uint
-SparseMemoryBindFlags = c_uint
-SparseImageFormatFlags = c_uint
-SubpassDescriptionFlags = c_uint
-PipelineStageFlags = c_uint
-SampleCountFlags = c_uint
-AttachmentDescriptionFlags = c_uint
-StencilFaceFlags = c_uint
-CullModeFlags = c_uint
-DescriptorPoolCreateFlags = c_uint
-DescriptorPoolResetFlags = c_uint
-DependencyFlags = c_uint
-CompositeAlphaFlagsKHR = c_uint
-DisplayPlaneAlphaFlagsKHR = c_uint
-SurfaceTransformFlagsKHR = c_uint
-SwapchainCreateFlagsKHR = c_uint
-DisplayModeCreateFlagsKHR = c_uint
-DisplaySurfaceCreateFlagsKHR = c_uint
-#AndroidSurfaceCreateFlagsKHR = c_uint
-#MirSurfaceCreateFlagsKHR = c_uint
-#WaylandSurfaceCreateFlagsKHR = c_uint
-#Win32SurfaceCreateFlagsKHR = c_uint
-#XlibSurfaceCreateFlagsKHR = c_uint
-#XcbSurfaceCreateFlagsKHR = c_uint
-DebugReportFlagsEXT = c_uint
 
 # ENUMS
 
@@ -973,7 +903,6 @@ fn_ReallocationFunction = FUNCTYPE( c_void_p, c_void_p, c_void_p, c_size_t, c_si
 fn_AllocationFunction = FUNCTYPE( c_void_p, c_void_p, c_size_t, c_size_t, SystemAllocationScope, )
 fn_FreeFunction = FUNCTYPE( None, c_void_p, c_void_p, )
 fn_VoidFunction = FUNCTYPE( None, )
-fn_DebugReportCallbackEXT = FUNCTYPE( Bool32, DebugReportFlagsEXT, DebugReportObjectTypeEXT, c_uint64, c_size_t, c_int, c_char_p, c_char_p, c_void_p, )
 
 
 # STRUCTURES
