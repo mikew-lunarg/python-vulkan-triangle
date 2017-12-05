@@ -52,9 +52,6 @@ STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
 Result = c_uint
 SUCCESS = 0
 
-# FUNC POINTERS
-fn_VoidFunction = FUNCTYPE( None, )
-
 # STRUCTURES
 ApplicationInfo = define_structure('ApplicationInfo',
     ('s_type', StructureType),
@@ -88,7 +85,7 @@ InstanceFunctions = (
 )
 
 GetInstanceProcAddr = vk.vkGetInstanceProcAddr
-GetInstanceProcAddr.restype = fn_VoidFunction
+GetInstanceProcAddr.restype = FUNCTYPE( None, )
 GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
 
 # Load the loader functions in the module namespace
