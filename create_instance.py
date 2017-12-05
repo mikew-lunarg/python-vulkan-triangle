@@ -64,21 +64,21 @@ class Application(object):
         self.GetPhysicalDeviceMemoryProperties(self.physical_device, byref(self.device_properties))
 
 
-    def get_queue_families(self):
+    def get_queue_families(self, physical_device):
         print("get_queue_families")
         qf_count = c_uint(0)
-        self.GetPhysicalDeviceQueueFamilyProperties(self.physical_device, byref(qf_count), None)
+        self.GetPhysicalDeviceQueueFamilyProperties(physical_device, byref(qf_count), None)
         if qf_count.value == 0:
             raise RuntimeError('GetPhysicalDeviceQueueFamilyProperties failed')
 
         qf_data = (vk.QueueFamilyProperties * qf_count.value)()
-        self.GetPhysicalDeviceQueueFamilyProperties(self.physical_device, byref(qf_count),
+        self.GetPhysicalDeviceQueueFamilyProperties(physical_device, byref(qf_count),
             cast(qf_data, POINTER(vk.QueueFamilyProperties)))
 
-    def get_memory_properties(self):
+    def get_memory_properties(self, physical_device):
         print("get_memory_properties")
         self.memory_properties = vk.PhysicalDeviceMemoryProperties()
-        self.GetPhysicalDeviceMemoryProperties(self.physical_device, byref(self.memory_properties))
+        self.GetPhysicalDeviceMemoryProperties(physical_device, byref(self.memory_properties))
 
 
     def __init__(self):
@@ -100,8 +100,8 @@ def main():
     app = Application()
     app.create_instance()
     app.enumerate_devices()
-    app.get_queue_families()
-    app.get_memory_properties()
+    app.get_queue_families(app.physical_device)
+    app.get_memory_properties(app.physical_device)
 
 
 if __name__ == '__main__':
