@@ -16,7 +16,6 @@ elif system_name == 'Linux':
     FUNCTYPE = CFUNCTYPE
     vk = cdll.LoadLibrary('libvulkan.so.1')
 
-
 def MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
 API_VERSION_1_0 = MAKE_VERSION(1,0,0)
@@ -25,17 +24,17 @@ API_VERSION_1_1 = MAKE_VERSION(1,1,0)
 def define_structure(name, *args):
     return type(name, (Structure,), {'_fields_': args})
 
-def load_functions(vk_object, functions_list, loader):
+def load_functions(vk_object, functions_list, load_func):
     functions = []
     for name, return_type, *args in functions_list:
         py_name = name.decode()[2::]
-        fn_ptr = loader(vk_object, name)
+        fn_ptr = load_func(vk_object, name)
         fn_ptr = cast(fn_ptr, c_void_p)
         if fn_ptr:
             fn = (FUNCTYPE(return_type, *args))(fn_ptr.value)
             functions.append((py_name, fn))
-        elif __debug__ == True:
-            print('Function {} could not be loaded. (__debug__ == True)'.format(py_name))
+        else:
+            print('Function {} not found.'.format(py_name))
     return functions
 
 # HANDLES
