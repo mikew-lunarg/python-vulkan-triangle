@@ -3,7 +3,7 @@
 # Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
 import vk
-from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
+from ctypes import cast, c_char_p, c_uint, c_int, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
 
 class Application(object):
 
@@ -34,7 +34,7 @@ class Application(object):
         print('CreateInstance');
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
         if result != vk.SUCCESS:
-            raise RuntimeError('CreateInstance failed. result {}'.format(result))
+            raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
 
         for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
             setattr(self, name, function)
