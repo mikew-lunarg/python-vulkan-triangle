@@ -96,7 +96,6 @@ class Application(object):
         self.instance = None
         self.gpu = None
         self.gpu_mem = None
-        self.device = None
 
         # Vulkan objets initialization
         self.create_instance()
@@ -104,15 +103,9 @@ class Application(object):
 
     def __del__(self):
         print("__del__")
-        if self.instance is None:
-            return
-
-        dev = self.device
-        if dev is not None:
-            self.DestroyDevice(dev, None)
-
-        print("DestroyInstance")
-        self.DestroyInstance(self.instance, None)
+        if self.instance is not None:
+            print("DestroyInstance")
+            self.DestroyInstance(self.instance, None)
 
 
 def main():
