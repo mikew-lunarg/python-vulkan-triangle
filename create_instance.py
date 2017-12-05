@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # mikew@lunarg.com
-# Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
+# Inspired (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
 import vk
 from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
@@ -46,18 +46,15 @@ class Application(object):
 
     def enumerate_devices(self):
         print("enumerate_devices")
-        self.gpu = None
-
-        # Enumerate the physical devices
         gpu_count = c_uint(0)
         result = self.EnumeratePhysicalDevices(self.instance, byref(gpu_count), None )
         if result != vk.SUCCESS or gpu_count.value == 0:
-            raise RuntimeError('EnumeratePhysicalDevices failed or zero.')
+            raise RuntimeError('EnumeratePhysicalDevices failed')
 
         buf = (vk.PhysicalDevice*gpu_count.value)()
         self.EnumeratePhysicalDevices(self.instance, byref(gpu_count), cast(buf, POINTER(vk.PhysicalDevice)))
 
-        # For this example use the first available device
+        # just use the first available device
         self.gpu = vk.PhysicalDevice(buf[0])
 
     def get_queue_families(self):
@@ -91,6 +88,7 @@ class Application(object):
         if self.instance is not None:
             print("DestroyInstance")
             self.DestroyInstance(self.instance, None)
+            self.instance = None
 
 
 def main():
