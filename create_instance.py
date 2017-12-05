@@ -6,7 +6,7 @@
 
     @author: Gabriel Dubé
 """
-import platform, vk, itertools
+import platform, vk
 from ctypes import cast, c_char_p, c_uint, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
 
 #system_name = platform.system()
@@ -43,10 +43,9 @@ class Application(object):
         print("CreateInstance");
         result = vk.CreateInstance(byref(create_info), None, byref(instance))
         if result == vk.SUCCESS:
-            # For simplicity, all vulkan functions are saved in the application object
-            functions = itertools.chain(vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr),
-                              vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr))
-            for name, function in functions:
+            for name, function in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
+                setattr(self, name, function)
+            for name, function in vk.load_functions(instance, vk.PhysicalDeviceFunctions, vk.GetInstanceProcAddr):
                 setattr(self, name, function)
 
             self.instance = instance
