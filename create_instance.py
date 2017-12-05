@@ -57,6 +57,13 @@ class Application(object):
         # just use the first available device
         self.gpu = vk.PhysicalDevice(buf[0])
 
+# dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
+    def get_device_properties(self):
+        print("get_device_properties")
+        self.device_properties = vk.PhysicalDeviceMemoryProperties()
+        self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.device_properties))
+
+
     def get_queue_families(self):
         print("get_queue_families")
         queue_families_count = c_uint(0)
@@ -82,6 +89,7 @@ class Application(object):
         self.instance = None
         self.gpu = None
         self.memory_properties = None
+        self.device_properties = None
 
     def __del__(self):
         print("__del__")
