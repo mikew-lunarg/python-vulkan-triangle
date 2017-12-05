@@ -69,12 +69,10 @@ class Application(object):
         # For this example use the first available device
         self.gpu = vk.PhysicalDevice(buf[0])
 
+    def get_queue_families(self):
+        print("get_queue_families")
         queue_families_count = c_uint(0)
-        self.GetPhysicalDeviceQueueFamilyProperties(
-            self.gpu,
-            byref(queue_families_count),
-            None
-        )
+        self.GetPhysicalDeviceQueueFamilyProperties( self.gpu, byref(queue_families_count), None)
         if queue_families_count.value == 0:
             raise RuntimeError('queue_families_count = 0.')
 
@@ -87,7 +85,6 @@ class Application(object):
 
     def get_memory_properties(self):
         print("get_memory_properties")
-        # Get the physical device memory properties.
         self.memory_properties = vk.PhysicalDeviceMemoryProperties()
         self.GetPhysicalDeviceMemoryProperties(self.gpu, byref(self.memory_properties))
 
@@ -102,6 +99,7 @@ class Application(object):
         # Vulkan objets initialization
         self.create_instance()
         self.query_device()
+        self.get_queue_families()
         self.get_memory_properties()
 
     def __del__(self):
