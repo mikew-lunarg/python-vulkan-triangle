@@ -43,7 +43,7 @@ def main():
         for name, fnptr in vk.load_functions(instance, vk.InstanceFunctions, vk.GetInstanceProcAddr):
             f[name] = fnptr
 
-        print('CreateInstance result {}'.format(c_int(result)))
+        print('SUCCESS')
         print('DestroyInstance')
         vk.DestroyInstance(instance, None)
         instance = None
