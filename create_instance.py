@@ -4,7 +4,7 @@
 
 import vk
 
-from ctypes import cast, c_char_p, c_uint, c_int, c_ubyte, c_ulonglong, pointer, POINTER, byref, c_float, Structure, sizeof, memmove
+from ctypes import c_int, pointer, byref
 
 def main():
 
