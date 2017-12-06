@@ -1,1 +1,1 @@
-python create_instance.py
+py create_instance.py
