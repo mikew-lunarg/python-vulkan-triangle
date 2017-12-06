@@ -2,7 +2,7 @@
 # mikew@lunarg.com
 # Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
-from ctypes import (c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, POINTER)
+from ctypes import c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, POINTER
 import platform
 
 # platform-specific library initialization
