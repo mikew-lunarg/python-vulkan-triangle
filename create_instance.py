@@ -3,7 +3,6 @@
 # Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
 
 from ctypes import c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, POINTER, pointer, byref
-
 import platform
 
 # platform-specific library initialization
@@ -31,7 +30,8 @@ Instance = c_size_t
 # FLAGS
 InstanceCreateFlags = c_uint
 
-# ENUMS
+# Enumeration definition ####################################################
+
 StructureType = c_uint
 STRUCTURE_TYPE_APPLICATION_INFO = 0
 STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
@@ -39,7 +39,8 @@ STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
 Result = c_uint
 SUCCESS = 0
 
-# STRUCTURES
+# Structure definition ######################################################
+
 ApplicationInfo = define_structure('ApplicationInfo',
     ('s_type', StructureType),
     ('next', c_void_p),
@@ -72,6 +73,10 @@ LoaderFunctions = (
     (b'vkCreateInstance', Result, POINTER(InstanceCreateInfo), c_void_p, POINTER(Instance), ),
 )
 
+InstanceFunctions = (
+    (b'vkDestroyInstance', None, Instance, c_void_p ),
+)
+
 def load_functions(vk_object, functions_list, load_func):
     functions = []
     for name, return_type, *args in functions_list:
@@ -88,13 +93,6 @@ def load_functions(vk_object, functions_list, load_func):
         fn = (FUNCTYPE(return_type, *args))(fn_ptr.value)
         functions.append((py_name, fn))
     return functions
-
-print("hello3")
-f=locals()
-for name, fnptr in load_functions(Instance(0), LoaderFunctions, GetInstanceProcAddr):
-    f[name] = fnptr
-print("hello4")
-
 
 
 app_info = ApplicationInfo(
@@ -118,10 +116,25 @@ create_info = InstanceCreateInfo(
     enabled_extension_names = None
 )
 
-print('CreateInstance');
 instance = Instance(0)
+
+print("hello3")
+f=locals()
+for name, fnptr in load_functions(instance, LoaderFunctions, GetInstanceProcAddr):
+    f[name] = fnptr
+print("hello4")
+
+print('CreateInstance');
 result = CreateInstance(byref(create_info), None, byref(instance))
 if result != SUCCESS:
     raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
 
+f = locals()
+for name, fnptr in load_functions(instance, InstanceFunctions, GetInstanceProcAddr):
+    f[name] = fnptr
+
 print('SUCCESS {}'.format(instance))
+print('DestroyInstance')
+DestroyInstance(instance, None)
+instance = None
+
