@@ -74,7 +74,7 @@ def load_functions(vk_object, functions_list, load_func):
     functions = []
     for name, return_type, *args in functions_list:
         print(name)
-        py_name = name.decode()[2::]
+        py_name = name.decode()
         print(py_name)
         fn_ptr = load_func(vk_object, name)
         print(fn_ptr)
@@ -127,7 +127,7 @@ for name, fnptr in load_functions(instance, LoaderFunctions, GetInstanceProcAddr
     f[name] = fnptr
 
 print('CreateInstance');
-result = CreateInstance(byref(create_info), None, byref(instance))
+result = vkCreateInstance(byref(create_info), None, byref(instance))
 if result != SUCCESS:
     raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
 
@@ -137,6 +137,6 @@ for name, fnptr in load_functions(instance, InstanceFunctions, GetInstanceProcAd
 print('SUCCESS {}'.format(instance))
 
 print('DestroyInstance')
-DestroyInstance(instance, None)
+vkDestroyInstance(instance, None)
 instance = None
 
