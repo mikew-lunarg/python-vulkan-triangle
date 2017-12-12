@@ -1,11 +1,12 @@
 #! /usr/bin/python3
 # mikew@lunarg.com
-# Derived (long long ago) from https://github.com/gabdube/python-vulkan-triangle
+# Inspired by https://github.com/gabdube/python-vulkan-triangle
 
 from ctypes import c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, POINTER, pointer, byref
 import platform
 
-# platform-specific library initialization
+# Platform library handling #################################################
+
 platform_name = platform.system()
 if platform_name == 'Windows':
     from ctypes import WINFUNCTYPE, windll
@@ -18,13 +19,28 @@ elif platform_name == 'Linux':
 else:
     raise RuntimeError('Unsupported platform {}'.format(platform_name))
 
-# HANDLES
+def load_functions(vk_object, functions_list, load_func):
+    functions = []
+    for name, return_type, *args in functions_list:
+        print(name)
+        py_name = name.decode()
+        print(py_name)
+        fn_ptr = load_func(vk_object, name)
+        print(fn_ptr)
+        fn_ptr = cast(fn_ptr, c_void_p)
+        print(fn_ptr)
+        if not fn_ptr:
+            raise RuntimeError('Function {} not found.'.format(py_name))
+
+        fn = (FUNCTYPE(return_type, *args))(fn_ptr.value)
+        functions.append((py_name, fn))
+    return functions
+
+# Vulkan declarations #######################################################
+
 Instance = c_size_t
 
-# FLAGS
 InstanceCreateFlags = c_uint
-
-# Enumeration definition ####################################################
 
 def MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
@@ -37,8 +53,6 @@ STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
 
 Result = c_uint
 SUCCESS = 0
-
-# Structure definition ######################################################
 
 def define_structure(name, *args):
     return type(name, (Structure,), {'_fields_': args})
@@ -64,29 +78,6 @@ InstanceCreateInfo = define_structure('InstanceCreateInfo',
     ('enabled_extension_names', POINTER(c_char_p)),
 )
 
-# Function definition #######################################################
-
-GetInstanceProcAddr = vk.vkGetInstanceProcAddr
-GetInstanceProcAddr.restype = FUNCTYPE( None, )
-GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
-
-def load_functions(vk_object, functions_list, load_func):
-    functions = []
-    for name, return_type, *args in functions_list:
-        print(name)
-        py_name = name.decode()
-        print(py_name)
-        fn_ptr = load_func(vk_object, name)
-        print(fn_ptr)
-        fn_ptr = cast(fn_ptr, c_void_p)
-        print(fn_ptr)
-        if not fn_ptr:
-            raise RuntimeError('Function {} not found.'.format(py_name))
-
-        fn = (FUNCTYPE(return_type, *args))(fn_ptr.value)
-        functions.append((py_name, fn))
-    return functions
-
 LoaderFunctions = (
     (b'vkCreateInstance', Result, POINTER(InstanceCreateInfo), c_void_p, POINTER(Instance), ),
 )
@@ -95,16 +86,20 @@ InstanceFunctions = (
     (b'vkDestroyInstance', None, Instance, c_void_p ),
 )
 
+GetInstanceProcAddr = vk.vkGetInstanceProcAddr
+GetInstanceProcAddr.restype = FUNCTYPE( None, )
+GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
+
 # Structure instances #######################################################
 
 app_info = ApplicationInfo(
     s_type = STRUCTURE_TYPE_APPLICATION_INFO,
     next = None,
-    application_name = b'PythonText',
+    application_name = b'vkCreateInstance.py',
     application_version = 0,
-    engine_name = b'test',
+    engine_name = b'',
     engine_version = 0,
-    api_version = API_VERSION_1_0
+    api_version = API_VERSION_1_1
 )
 
 create_info = InstanceCreateInfo(
@@ -126,7 +121,6 @@ f=locals()
 for name, fnptr in load_functions(instance, LoaderFunctions, GetInstanceProcAddr):
     f[name] = fnptr
 
-print('CreateInstance');
 result = vkCreateInstance(byref(create_info), None, byref(instance))
 if result != SUCCESS:
     raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
@@ -134,9 +128,8 @@ if result != SUCCESS:
 f = locals()
 for name, fnptr in load_functions(instance, InstanceFunctions, GetInstanceProcAddr):
     f[name] = fnptr
-print('SUCCESS {}'.format(instance))
 
-print('DestroyInstance')
 vkDestroyInstance(instance, None)
-instance = None
+
+# eof
 
