@@ -17,7 +17,7 @@ elif platform_name == 'Linux':
     FUNCTYPE = CFUNCTYPE
     vk = cdll.LoadLibrary('libvulkan.so.1')
 else:
-    raise RuntimeError('Unsupported platform {}'.format(platform_name))
+    raise RuntimeError('Unsupported platform "{}"'.format(platform_name))
 
 def load_functions(vk_object, functions_list, load_func):
     functions = []
@@ -47,7 +47,7 @@ StructureType = c_uint
 STRUCTURE_TYPE_APPLICATION_INFO = 0
 STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
 
-Result = c_uint
+Result = c_int
 SUCCESS = 0
 
 def define_structure(name, *args):
@@ -95,16 +95,16 @@ app_info = ApplicationInfo(
     application_version = 0,
     engine_name = b'',
     engine_version = 0,
-    api_version = API_VERSION_1_1
+    api_version = API_VERSION_1_0
 )
 
 create_info = InstanceCreateInfo(
     s_type = STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-    next = None,
-    flags = 0,
-    application_info = pointer(app_info),
-    enabled_layer_count = 0,
-    enabled_layer_names = None,
+    next                    = None,
+    flags                   = 0,
+    application_info        = pointer(app_info),
+    enabled_layer_count     = 0,
+    enabled_layer_names     = None,
     enabled_extension_count = 0,
     enabled_extension_names = None
 )
@@ -119,7 +119,7 @@ for name, fnptr in load_functions(instance, LoaderFunctions, GetInstanceProcAddr
 
 result = vkCreateInstance(byref(create_info), None, byref(instance))
 if result != SUCCESS:
-    raise RuntimeError('CreateInstance failed. result {}'.format(c_int(result)))
+    raise RuntimeError('CreateInstance() returned {}'.format(result))
 
 f = locals()
 for name, fnptr in load_functions(instance, InstanceFunctions, GetInstanceProcAddr):
