@@ -22,13 +22,9 @@ else:
 def load_functions(vk_object, functions_list, load_func):
     functions = []
     for name, return_type, *args in functions_list:
-        print(name)
         py_name = name.decode()
-        print(py_name)
         fn_ptr = load_func(vk_object, name)
-        print(fn_ptr)
         fn_ptr = cast(fn_ptr, c_void_p)
-        print(fn_ptr)
         if not fn_ptr:
             raise RuntimeError('Function {} not found.'.format(py_name))
 
