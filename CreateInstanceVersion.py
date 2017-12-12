@@ -34,98 +34,99 @@ def load_functions(vk_object, functions_list, load_func):
 
 # Vulkan declarations #######################################################
 
-Instance = c_size_t
+VkInstance = c_size_t
 
-InstanceCreateFlags = c_uint
+VkInstanceCreateFlags = c_uint
 
-def MAKE_VERSION(major, minor, patch):
+def VK_MAKE_VERSION(major, minor, patch):
     return (major<<22) | (minor<<12) | patch
-API_VERSION_1_0 = MAKE_VERSION(1,0,0)
-API_VERSION_1_1 = MAKE_VERSION(1,1,0)
+VK_API_VERSION_1_0 = VK_MAKE_VERSION(1,0,0)
+VK_API_VERSION_1_1 = VK_MAKE_VERSION(1,1,0)
 
-StructureType = c_uint
-STRUCTURE_TYPE_APPLICATION_INFO = 0
-STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
+VkStructureType = c_uint
+VK_STRUCTURE_TYPE_APPLICATION_INFO = 0
+VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1
 
-Result = c_int
-SUCCESS = 0
+VkResult = c_int
+VK_SUCCESS = 0
 
-def define_structure(name, *args):
+def define_struct(name, *args):
     return type(name, (Structure,), {'_fields_': args})
 
-ApplicationInfo = define_structure('ApplicationInfo',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('application_name', c_char_p),
-    ('application_version', c_uint),
-    ('engine_name', c_char_p),
-    ('engine_version', c_uint),
-    ('api_version', c_uint),
+VkApplicationInfo = define_struct('ApplicationInfo',
+    ('sType', VkStructureType),
+    ('pNext', c_void_p),
+    ('pApplicationName', c_char_p),
+    ('applicationVersion', c_uint),
+    ('pEngineName', c_char_p),
+    ('engineVersion', c_uint),
+    ('apiVersion', c_uint),
 )
 
-InstanceCreateInfo = define_structure('InstanceCreateInfo',
-    ('s_type', StructureType),
-    ('next', c_void_p),
-    ('flags', InstanceCreateFlags),
-    ('application_info', POINTER(ApplicationInfo)),
-    ('enabled_layer_count', c_uint),
-    ('enabled_layer_names', POINTER(c_char_p)),
-    ('enabled_extension_count', c_uint),
-    ('enabled_extension_names', POINTER(c_char_p)),
+VkInstanceCreateInfo = define_struct('instancecreateinfo',
+    ('sType', VkStructureType),
+    ('pNext', c_void_p),
+    ('flags', VkInstanceCreateFlags),
+    ('pApplicationInfo', POINTER(VkApplicationInfo)),
+    ('enabledLayerCount', c_uint),
+    ('ppEnabledLayerNames', POINTER(c_char_p)),
+    ('enabledExtensionCount', c_uint),
+    ('ppEnabledExtensionNames', POINTER(c_char_p)),
 )
 
 LoaderFunctions = (
-    (b'vkCreateInstance', Result, POINTER(InstanceCreateInfo), c_void_p, POINTER(Instance), ),
+    (b'vkCreateInstance', VkResult, POINTER(VkInstanceCreateInfo), c_void_p, POINTER(VkInstance), ),
 )
 
 InstanceFunctions = (
-    (b'vkDestroyInstance', None, Instance, c_void_p ),
+    (b'vkDestroyInstance', None, VkInstance, c_void_p ),
 )
 
 GetInstanceProcAddr = vk.vkGetInstanceProcAddr
 GetInstanceProcAddr.restype = FUNCTYPE( None, )
-GetInstanceProcAddr.argtypes = (Instance, c_char_p, )
+GetInstanceProcAddr.argtypes = (VkInstance, c_char_p, )
 
 # Structure instances #######################################################
 
-app_info = ApplicationInfo(
-    s_type = STRUCTURE_TYPE_APPLICATION_INFO,
-    next = None,
-    application_name = b'vkCreateInstance.py',
-    application_version = 0,
-    engine_name = b'',
-    engine_version = 0,
-    api_version = API_VERSION_1_0
+app_info = VkApplicationInfo(
+    sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+    pNext = None,
+    pApplicationName = b'CreateInstanceVersion.py',
+    applicationVersion = 0,
+    pEngineName = b'',
+    engineVersion = 0,
+    apiVersion = VK_API_VERSION_1_1
 )
 
-create_info = InstanceCreateInfo(
-    s_type = STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-    next                    = None,
+create_info = VkInstanceCreateInfo(
+    sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+    pNext                    = None,
     flags                   = 0,
-    application_info        = pointer(app_info),
-    enabled_layer_count     = 0,
-    enabled_layer_names     = None,
-    enabled_extension_count = 0,
-    enabled_extension_names = None
+    pApplicationInfo        = pointer(app_info),
+    enabledLayerCount     = 0,
+    ppEnabledLayerNames     = None,
+    enabledExtensionCount = 0,
+    ppEnabledExtensionNames = None
 )
 
 # main() ####################################################################
 
-instance = Instance(0)
+inst = VkInstance(0)
 
 f=locals()
-for name, fnptr in load_functions(instance, LoaderFunctions, GetInstanceProcAddr):
+for name, fnptr in load_functions(inst, LoaderFunctions, GetInstanceProcAddr):
     f[name] = fnptr
 
-result = vkCreateInstance(byref(create_info), None, byref(instance))
-if result != SUCCESS:
-    raise RuntimeError('CreateInstance() returned {}'.format(result))
+result = vkCreateInstance(byref(create_info), None, byref(inst))
+print('vkCreateInstance() returned {}'.format(result))
+if result != VK_SUCCESS:
+    raise RuntimeError('vkCreateInstance() failed')
 
 f = locals()
-for name, fnptr in load_functions(instance, InstanceFunctions, GetInstanceProcAddr):
+for name, fnptr in load_functions(inst, InstanceFunctions, GetInstanceProcAddr):
     f[name] = fnptr
 
-vkDestroyInstance(instance, None)
+vkDestroyInstance(inst, None)
 
 # eof
 
