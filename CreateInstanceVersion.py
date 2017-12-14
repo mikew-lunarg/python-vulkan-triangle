@@ -1,9 +1,26 @@
 #! /usr/bin/python3
-# mikew@lunarg.com
+
+# Copyright (C) 2017 Valve Corporation
+# Copyright (C) 2017 LunarG, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Author: Mike Weiblen <mikew@lunarg.com>
+
 # Inspired by https://github.com/gabdube/python-vulkan-triangle
 
+import platform, sys
 from ctypes import c_void_p, c_float, c_uint8, c_uint, c_uint64, c_int, c_size_t, c_char, c_char_p, cast, Structure, POINTER, pointer, byref
-import platform
 
 # Platform library handling #################################################
 
@@ -19,20 +36,20 @@ elif platform_name == 'Linux':
 else:
     raise RuntimeError('Unsupported platform "{}"'.format(platform_name))
 
-def load_functions(vk_object, functions_list, load_func):
-    functions = []
-    for name, return_type, *args in functions_list:
+def GetFunctions(vk_object, function_list, get_proc_addr):
+    result = []
+    for name, return_type, *args in function_list:
         py_name = name.decode()
-        fn_ptr = load_func(vk_object, name)
+        fn_ptr = get_proc_addr(vk_object, name)
         fn_ptr = cast(fn_ptr, c_void_p)
         if not fn_ptr:
-            raise RuntimeError('Function {} not found.'.format(py_name))
+            raise RuntimeError('Function "{}" not found.'.format(py_name))
 
-        fn = (FUNCTYPE(return_type, *args))(fn_ptr.value)
-        functions.append((py_name, fn))
-    return functions
+        func = (FUNCTYPE(return_type, *args))(fn_ptr.value)
+        result.append((py_name, func))
+    return result
 
-# Vulkan declarations #######################################################
+# Vulkan declarations & utils ###############################################
 
 VkInstance = c_size_t
 
@@ -53,7 +70,7 @@ VK_SUCCESS = 0
 def define_struct(name, *args):
     return type(name, (Structure,), {'_fields_': args})
 
-VkApplicationInfo = define_struct('ApplicationInfo',
+VkApplicationInfo = define_struct('VkApplicationInfo',
     ('sType', VkStructureType),
     ('pNext', c_void_p),
     ('pApplicationName', c_char_p),
@@ -63,7 +80,7 @@ VkApplicationInfo = define_struct('ApplicationInfo',
     ('apiVersion', c_uint),
 )
 
-VkInstanceCreateInfo = define_struct('instancecreateinfo',
+VkInstanceCreateInfo = define_struct('VkInstanceCreateInfo',
     ('sType', VkStructureType),
     ('pNext', c_void_p),
     ('flags', VkInstanceCreateFlags),
@@ -75,58 +92,85 @@ VkInstanceCreateInfo = define_struct('instancecreateinfo',
 )
 
 LoaderFunctions = (
-    (b'vkCreateInstance', VkResult, POINTER(VkInstanceCreateInfo), c_void_p, POINTER(VkInstance), ),
+    (b'vkCreateInstance', VkResult, POINTER(VkInstanceCreateInfo), c_void_p, POINTER(VkInstance),),
 )
 
 InstanceFunctions = (
-    (b'vkDestroyInstance', None, VkInstance, c_void_p ),
+    (b'vkDestroyInstance', None, VkInstance, c_void_p),
 )
 
-GetInstanceProcAddr = vk.vkGetInstanceProcAddr
-GetInstanceProcAddr.restype = FUNCTYPE( None, )
-GetInstanceProcAddr.argtypes = (VkInstance, c_char_p, )
+vkGetInstanceProcAddr = vk.vkGetInstanceProcAddr
+vkGetInstanceProcAddr.restype = FUNCTYPE(None,)
+vkGetInstanceProcAddr.argtypes = (VkInstance, c_char_p,)
 
-# Structure instances #######################################################
+def VkResultStr(result):
+    if   (result == 0):   return 'VK_SUCCESS'
+    elif (result == 1):   return 'VK_NOT_READY'
+    elif (result == 2):   return 'VK_TIMEOUT'
+    elif (result == 3):   return 'VK_EVENT_SET'
+    elif (result == 4):   return 'VK_EVENT_RESET'
+    elif (result == 5):   return 'VK_INCOMPLETE'
+    elif (result == -1):  return 'VK_ERROR_OUT_OF_HOST_MEMORY'
+    elif (result == -2):  return 'VK_ERROR_OUT_OF_DEVICE_MEMORY'
+    elif (result == -3):  return 'VK_ERROR_INITIALIZATION_FAILED'
+    elif (result == -4):  return 'VK_ERROR_DEVICE_LOST'
+    elif (result == -5):  return 'VK_ERROR_MEMORY_MAP_FAILED'
+    elif (result == -6):  return 'VK_ERROR_LAYER_NOT_PRESENT'
+    elif (result == -7):  return 'VK_ERROR_EXTENSION_NOT_PRESENT'
+    elif (result == -8):  return 'VK_ERROR_FEATURE_NOT_PRESENT'
+    elif (result == -9):  return 'VK_ERROR_INCOMPATIBLE_DRIVER'
+    elif (result == -10): return 'VK_ERROR_TOO_MANY_OBJECTS'
+    elif (result == -11): return 'VK_ERROR_FORMAT_NOT_SUPPORTED'
+    elif (result == -12): return 'VK_ERROR_FRAGMENTED_POOL'
+    else: return 'unknown'
+
+# main() ####################################################################
+
+if len(sys.argv) != 4:
+    raise RuntimeError('usage: {} <major> <minor> <patch>'.format(sys.argv[0]))
+
+# get desired Vulkan API version from the commandline.
+major = int(sys.argv[1])
+minor = int(sys.argv[2])
+patch = int(sys.argv[3])
 
 app_info = VkApplicationInfo(
-    sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-    pNext = None,
-    pApplicationName = b'CreateInstanceVersion.py',
-    applicationVersion = 0,
-    pEngineName = b'',
-    engineVersion = 0,
-    apiVersion = VK_API_VERSION_1_1
+    sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+    pNext              = None,
+    pApplicationName   = b'CreateInstanceVersion.py',
+    applicationVersion = VK_MAKE_VERSION(1,0,0),
+    pEngineName        = None,
+    engineVersion      = 0,
+    apiVersion         = VK_MAKE_VERSION(major,minor,patch)
 )
 
 create_info = VkInstanceCreateInfo(
-    sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-    pNext                    = None,
+    sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+    pNext                   = None,
     flags                   = 0,
     pApplicationInfo        = pointer(app_info),
-    enabledLayerCount     = 0,
+    enabledLayerCount       = 0,
     ppEnabledLayerNames     = None,
-    enabledExtensionCount = 0,
+    enabledExtensionCount   = 0,
     ppEnabledExtensionNames = None
 )
-
-# main() ####################################################################
 
 inst = VkInstance(0)
 
 f=locals()
-for name, fnptr in load_functions(inst, LoaderFunctions, GetInstanceProcAddr):
-    f[name] = fnptr
+for name, func in GetFunctions(inst, LoaderFunctions, vkGetInstanceProcAddr):
+    f[name] = func
 
 result = vkCreateInstance(byref(create_info), None, byref(inst))
-print('vkCreateInstance() returned {}'.format(result))
+print(result,VkResultStr(result))
+
 if result != VK_SUCCESS:
     raise RuntimeError('vkCreateInstance() failed')
 
 f = locals()
-for name, fnptr in load_functions(inst, InstanceFunctions, GetInstanceProcAddr):
-    f[name] = fnptr
+for name, func in GetFunctions(inst, InstanceFunctions, vkGetInstanceProcAddr):
+    f[name] = func
 
 vkDestroyInstance(inst, None)
 
-# eof
-
+# vim: set sw=4 ts=8 et ic ai:
